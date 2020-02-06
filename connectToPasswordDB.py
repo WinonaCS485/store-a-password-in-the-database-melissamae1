@@ -40,10 +40,28 @@ try:
 
         #while password is incorrect
         while is_correct == False:
-            attempted_Password = input("\n----Login----" + "\nUsername: " + userName + "\nPassword: ")
+
+            userName_2 = input("Username: ")
+            
+
+            # new SQL!!!!
+            # salt_2, hashed_password_2 = cursor[0].execute( "SELECT `saltVal`, `hashedPass` FROM `UserData` WHERE `username`= %s", (userName_2,) )
+            sql = "SELECT `saltVal`, `hashedPass` FROM `UserData` WHERE `userName`= %s"
+
+            # execute the SQL command
+            cursor.execute( sql, userName_2 )
+                
+            # get the results
+            for result in cursor:
+                print (result)
+                salt_2 = result['saltVal']
+                hashed_password_2 = result['hashedPass']
+
+
+            attempted_Password = input("Password: ")
 
             # 4. Tell the user if they are correct or incorrect
-            if( hashlib.sha512((attempted_Password + salt).encode('utf-8')).hexdigest() == hashed_password ):
+            if( hashlib.sha512((attempted_Password + salt_2).encode('utf-8')).hexdigest() == hashed_password ):
                 print("Correct!")
                 is_correct = True
             else:
